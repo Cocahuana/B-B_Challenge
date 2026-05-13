@@ -24,19 +24,19 @@ import type { Locale } from "@/lib/i18n/routing";
 export const revalidate = 60;
 
 type Props = {
-  // WHY: params is a Promise in Next.js 16 — see dynamic-routes.md
-  params: Promise<{ lang: Locale }>;
+	// WHY: params is a Promise in Next.js 16 — see dynamic-routes.md
+	params: Promise<{ lang: Locale }>;
 };
 
 export default async function HomePage({ params }: Props) {
-  const { lang } = await params;
+	const { lang } = await params;
 
-  // TODO Phase 4: fetch homepage data from Sanity with GROQ
-  // TODO Phase 7: replace with <SectionRenderer sections={data.sections} />
+	// TODO Phase 4: fetch homepage data from Sanity with GROQ
+	// TODO Phase 7: replace with <SectionRenderer sections={data.sections} />
 
-  return (
-    <main>
-      <p>Homepage — locale: {lang}</p>
-    </main>
-  );
+	return (
+		<main>
+			<p>Homepage — locale: {lang}</p>
+		</main>
+	);
 }

@@ -5,5 +5,5 @@ import { defaultLocale } from "@/lib/i18n/routing";
 // We redirect to the default locale so crawlers follow the canonical
 // locale URL and never index a duplicate, empty root page.
 export default function RootPage() {
-  redirect(`/${defaultLocale}`);
+	redirect(`/${defaultLocale}`);
 }

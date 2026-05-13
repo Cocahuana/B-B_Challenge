@@ -12,5 +12,5 @@ export type Locale = (typeof locales)[number];
 
 /** Type-guard: returns true if s is a supported locale. */
 export function isValidLocale(s: string): s is Locale {
-  return (locales as readonly string[]).includes(s);
+	return (locales as readonly string[]).includes(s);
 }

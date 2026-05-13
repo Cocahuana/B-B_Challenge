@@ -4,15 +4,15 @@
 import "./globals.css";
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    // lang="" is intentionally omitted here — [lang]/layout.tsx sets it
-    // per locale. This avoids serving a mismatched lang attribute on SSR.
-    <html>
-      <body>{children}</body>
-    </html>
-  );
+	return (
+		// lang="" is intentionally omitted here — [lang]/layout.tsx sets it
+		// per locale. This avoids serving a mismatched lang attribute on SSR.
+		<html>
+			<body>{children}</body>
+		</html>
+	);
 }

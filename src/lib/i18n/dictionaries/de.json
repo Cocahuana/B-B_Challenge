@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "menuToggle": "Menü öffnen",
+    "close": "Schließen"
+  },
+  "hero": {
+    "appStoreBadgeAlt": "Jetzt bei Google Play",
+    "appStoreBadgeAppleAlt": "Laden im App Store",
+    "googleRatingAlt": "Google Bewertung"
+  },
+  "menu": {
+    "approvalLabel": "Zustimmung",
+    "reviewsLabel": "Bewertungen"
+  },
+  "checklist": {
+    "checkIconAlt": "Häkchen"
+  },
+  "steps": {
+    "stepLabel": "Schritt"
+  },
+  "testimonials": {
+    "prevSlide": "Vorherige Bewertung",
+    "nextSlide": "Nächste Bewertung"
+  },
+  "form": {
+    "namePlaceholder": "Ihr Name",
+    "companyPlaceholder": "Firmenname",
+    "emailPlaceholder": "E-Mail",
+    "phonePlaceholder": "Ihre Telefonnummer",
+    "companySizePlaceholder": "Bitte auswählen",
+    "companySizeLabel": "Unternehmensgröße",
+    "commentsPlaceholder": "Ihre Kommentare",
+    "consentText": "Ich stimme zu, von Bella&Bona aufgrund dieser Anfrage kontaktiert zu werden.",
+    "nameLabel": "Name",
+    "companyLabel": "Firmenname",
+    "emailLabel": "E-Mail",
+    "phoneLabel": "Telefonnummer",
+    "commentsLabel": "Zusätzliche Kommentare",
+    "requiredSuffix": "*",
+    "submitError": "Bitte füllen Sie alle Pflichtfelder aus.",
+    "submitSuccess": "Vielen Dank! Wir melden uns bald bei Ihnen."
+  },
+  "faq": {
+    "expandLabel": "Antwort anzeigen",
+    "collapseLabel": "Antwort ausblenden"
+  },
+  "footer": {
+    "followUs": "Folge uns!",
+    "emailLabel": "E-Mail",
+    "quickLinks": "Schnellzugriffe",
+    "forEmployers": "für Arbeitgeber",
+    "forEmployees": "für Mitarbeiter",
+    "joinTeam": "Werde Teil des Bella&Bona-Teams!",
+    "aboutUs": "über uns",
+    "caseStudies": "Fallstudien",
+    "blog": "Blogs",
+    "explore": "Entdecken",
+    "ourMenu": "unser Menü",
+    "businessCatering": "Geschäfts-Catering",
+    "dailyLunch": "Tägliches Mittagessen",
+    "policies": "Unsere Richtlinien",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutz",
+    "cookies": "Cookies",
+    "copyright": "Bella&Bona Copyright © 2025. Mit Liebe gestaltet.",
+    "logoAlt": "Bella&Bona"
+  },
+  "a11y": {
+    "skipToContent": "Zum Inhalt springen"
+  }
+}

@@ -35,8 +35,16 @@ export const heroSection = defineType({
 			// is published on one of the stores.
 			options: { collapsible: true, collapsed: false },
 			fields: [
-				defineField({ name: "playStore", title: "Google Play URL", type: "url" }),
-				defineField({ name: "appStore", title: "Apple App Store URL", type: "url" }),
+				defineField({
+					name: "playStore",
+					title: "Google Play URL",
+					type: "url",
+				}),
+				defineField({
+					name: "appStore",
+					title: "Apple App Store URL",
+					type: "url",
+				}),
 			],
 		}),
 		defineField({

@@ -1,18 +1,22 @@
-// WHY: This is the minimal root layout required by Next.js App Router.
-// Real per-locale metadata (lang attribute, hreflang, fonts) lives in
-// src/app/[lang]/layout.tsx so each locale gets its own <html lang=""> value.
+// WHY: This root layout is intentionally a pass-through (no <html>/<body>).
+//
+// Per Next.js docs: "The root layout can also be nested in the new folder
+// (e.g. app/[lang]/layout.js)." This is the recommended pattern for i18n
+// when you need <html lang={locale}> to be set per-locale at SSR time.
+//
+// Each leaf root layout is responsible for html/body:
+//   • app/[lang]/layout.tsx  → localized routes (/de/*, /en/*)
+//   • app/studio/layout.tsx  → Sanity Studio (/studio/*)
+//
+// The app/page.tsx redirect never renders HTML (it returns a 3xx response),
+// so it does not need a layout providing html/body.
 import "./globals.css";
 
 export default function RootLayout({
 	children,
-}: Readonly<{
+}: {
 	children: React.ReactNode;
-}>) {
-	return (
-		// lang="" is intentionally omitted here — [lang]/layout.tsx sets it
-		// per locale. This avoids serving a mismatched lang attribute on SSR.
-		<html>
-			<body>{children}</body>
-		</html>
-	);
+}) {
+	// WHY: Fragment wrapper — no html/body here; child layouts supply them.
+	return <>{children}</>;
 }

@@ -45,10 +45,10 @@ export const contactSection = defineType({
 			// WHY: `string` instead of `email` type — the email validator in
 			// Sanity is strict; we want flexibility for display-only addresses.
 			validation: (Rule) =>
-				Rule.required().regex(
-					/^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-					{ name: "email", invert: false },
-				),
+				Rule.required().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
+					name: "email",
+					invert: false,
+				}),
 		}),
 		defineField({
 			name: "personPhone",

@@ -24,7 +24,10 @@ export const contactFormSection = defineType({
 			name: "submitLabel",
 			title: "Submit button label",
 			type: "localizedString",
-			initialValue: { de: "Kostenloses Angebot anfordern", en: "Request free offer" },
+			initialValue: {
+				de: "Kostenloses Angebot anfordern",
+				en: "Request free offer",
+			},
 			validation: (Rule) => Rule.required(),
 		}),
 	],

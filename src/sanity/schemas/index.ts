@@ -58,4 +58,3 @@ export const schemaTypes: SchemaTypeDefinition[] = [
 	homePage,
 	siteSettings,
 ];
-

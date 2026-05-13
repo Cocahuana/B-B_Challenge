@@ -17,7 +17,7 @@ export const step = defineType({
 	fields: [
 		defineField({
 			name: "badge",
-			title: 'Step badge (e.g. “Schritt 01”)',
+			title: "Step badge (e.g. “Schritt 01”)",
 			type: "localizedString",
 			// WHY: localizedString because "Schritt" in DE → "Step" in EN.
 			validation: (Rule) => Rule.required(),

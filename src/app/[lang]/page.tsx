@@ -18,7 +18,9 @@
 //   The traditional `export const revalidate` path is the stable, documented
 //   API for projects that do NOT enable that flag.
 
+import { notFound } from "next/navigation";
 import type { Locale } from "@/lib/i18n/routing";
+import { fetchHomePage } from "@/sanity/lib/fetch";
 
 // ─── ISR: regenerate at most every 60 seconds ────────────────────────────────
 export const revalidate = 60;
@@ -31,12 +33,24 @@ type Props = {
 export default async function HomePage({ params }: Props) {
 	const { lang } = await params;
 
-	// TODO Phase 4: fetch homepage data from Sanity with GROQ
-	// TODO Phase 7: replace with <SectionRenderer sections={data.sections} />
+	// WHY: fetchHomePage() passes `lang` as a GROQ parameter so the Sanity
+	// query projects localised strings directly — components receive plain
+	// strings, not { de, en } objects. See src/sanity/lib/queries.ts.
+	const data = await fetchHomePage(lang);
 
+	if (!data) {
+		// WHY: notFound() is appropriate here — the homePage document hasn't been
+		// created in Sanity yet. It renders the nearest not-found.tsx boundary
+		// rather than crashing with an unhandled null reference.
+		// WHY static import (not dynamic): dynamic import loses the `never`
+		// return type of notFound(), so TypeScript can't narrow data as non-null.
+		notFound();
+	}
+
+	// TODO Phase 7: replace with <SectionRenderer sections={data.sections} />
 	return (
 		<main>
-			<p>Homepage — locale: {lang}</p>
+			<p>Homepage — locale: {lang} — {data.sections.length} sections</p>
 		</main>
 	);
 }

@@ -32,7 +32,7 @@ export const menuShowcaseSection = defineType({
 					fields: [
 						defineField({
 							name: "tag",
-						title: 'Category tag (e.g. "Saisonale Highlights")',
+							title: 'Category tag (e.g. "Saisonale Highlights")',
 							type: "localizedString",
 						}),
 						defineField({

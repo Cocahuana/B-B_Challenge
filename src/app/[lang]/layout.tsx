@@ -6,8 +6,8 @@
 //     broken page with missing translations.
 //  3. Providing the Dictionary via context so every child component can access
 //     UI strings without prop-drilling or a separate fetch per component.
-//
-// generateMetadata (hreflang, OG, canonical) is added in Phase 6.
+//  4. Loading web fonts and exposing them as CSS variables used by Tailwind
+//     via @theme in globals.css.
 
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -18,6 +18,35 @@ import { DictionaryProvider } from "@/lib/i18n/DictionaryContext";
 // WHY: globals.css is imported here (not in root layout) because this layout
 // IS the root layout for all /[lang]/* routes — it renders <html> and <body>.
 import "@/app/globals.css";
+
+// ── Web fonts ─────────────────────────────────────────────────────────────────
+// WHY next/font/google instead of a <link> tag:
+//   next/font downloads fonts at build time, self-hosts them, and inlines a
+//   `font-display: swap` hint. This eliminates the third-party round-trip to
+//   fonts.googleapis.com (GDPR-friendlier too) and avoids layout shift.
+//
+// WHY Inter + Barlow Condensed:
+//   Inter is the best-in-class neutral sans-serif for body/UI text — excellent
+//   letter-spacing and legibility at small sizes.
+//   Barlow Condensed ExtraBold is used for the large display heading in the
+//   footer wordmark and hero-scale text — matches Bella&Bona's compressed,
+//   high-impact display style.
+import { Inter, Barlow_Condensed } from "next/font/google";
+
+const inter = Inter({
+	subsets: ["latin"],
+	// WHY variable: exposes the font as --font-inter so globals.css @theme can
+	// reference it — avoids duplicating the font-family string.
+	variable: "--font-inter",
+	display: "swap",
+});
+
+const barlowCondensed = Barlow_Condensed({
+	subsets: ["latin"],
+	weight: ["700", "900"],
+	variable: "--font-barlow",
+	display: "swap",
+});
 
 export function generateStaticParams() {
 	// WHY: Tells Next.js which [lang] slugs to pre-render at build time.
@@ -78,7 +107,14 @@ export default async function LangLayout({
 	return (
 		// WHY: lang on <html> satisfies WCAG 3.1.1 (Language of Page) and is
 		// used by Google to confirm the page's language independent of URL.
-		<html lang={lang}>
+		// WHY className on <html>: next/font injects CSS variables (--font-inter,
+		// --font-barlow) only inside the element that carries the variable class.
+		// Putting them on <html> makes both fonts available to every descendant
+		// including the <body>, which is what globals.css @theme references.
+		<html
+			lang={lang}
+			className={`${inter.variable} ${barlowCondensed.variable}`}
+		>
 			<body>
 				{/* WHY: DictionaryProvider makes the dictionary available to any
 				    Client Component in the subtree via useDictionary() hook —

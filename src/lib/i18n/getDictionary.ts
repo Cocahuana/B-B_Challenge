@@ -21,12 +21,28 @@ import type { Locale } from "./routing";
 // If a key exists in DE but is missing from EN, TypeScript will NOT catch it
 // at this level — that's an acceptable trade-off. A dedicated i18n linting
 // tool (e.g. i18n-ally VS Code extension) can enforce key parity instead.
-const dictionaries = {
-	de: () => import("./dictionaries/de.json").then((m) => m.default),
-	en: () => import("./dictionaries/en.json").then((m) => m.default),
-} satisfies Record<Locale, () => Promise<unknown>>;
+//
+// WHY no `satisfies Record<Locale, () => Promise<unknown>>`:
+// Adding that annotation widens the value type to `Promise<unknown>`, which
+// makes `Dictionary = unknown` — the exact opposite of what we want. The
+// assignment is type-safe without the annotation because every locale key is
+// checked against `Locale` via the explicit `Record<Locale, ...>` cast below.
+const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
+	de: () =>
+		import("./dictionaries/de.json").then((m) => m.default as Dictionary),
+	en: () =>
+		import("./dictionaries/en.json").then((m) => m.default as Dictionary),
+};
 
-export type Dictionary = Awaited<ReturnType<typeof dictionaries.de>>;
+// WHY: Dictionary is the shape of de.json (the canonical source-of-truth
+// locale). We derive the type from a direct typeof so any key added to
+// de.json is automatically reflected here without manual maintenance.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Dictionary = typeof import("./dictionaries/de.json") extends {
+	default: infer T;
+}
+	? T
+	: any;
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
 	return dictionaries[locale]() as Promise<Dictionary>;

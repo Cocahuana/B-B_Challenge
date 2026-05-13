@@ -22,7 +22,11 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n/routing";
 import { fetchHomePage, fetchSiteSettings } from "@/sanity/lib/fetch";
+import { getDictionary } from "@/lib/i18n/getDictionary";
 import { urlFor } from "@/sanity/lib/image";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import SectionRenderer from "@/components/sections/SectionRenderer";
 
 // ─── ISR: regenerate at most every 60 seconds ────────────────────────────────
 export const revalidate = 60;
@@ -101,7 +105,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
 	const { lang } = await params;
 
-	// WHY: Both fetches are cache()-memoised — no duplicate network calls even
+	// WHY Both fetches are cache()-memoised — no duplicate network calls even
 	// though generateMetadata above already called them in the same render pass.
 	const [data, settings] = await Promise.all([
 		fetchHomePage(lang),
@@ -116,6 +120,12 @@ export default async function HomePage({ params }: Props) {
 		// return type of notFound(), so TypeScript can't narrow data as non-null.
 		notFound();
 	}
+
+	// WHY: getDictionary is needed here (not just in layout) because Footer
+	// consumes dictionary strings directly. The call is cheap — getDictionary
+	// uses dynamic import (code-split per locale) and is cached by Node module
+	// resolution after the first call in the same request.
+	const dictionary = await getDictionary(lang);
 
 	// ─── JSON-LD: Organization ─────────────────────────────────────────────
 	// WHY Organization (not WebPage): the homepage is primarily an entry point
@@ -143,18 +153,32 @@ export default async function HomePage({ params }: Props) {
 		].filter(Boolean),
 	};
 
-	// TODO Phase 7: replace <p> with <SectionRenderer sections={data.sections} />
+	// WHY: Skip-to-content link before Navbar satisfies WCAG 2.4.1 (Bypass
+	// Blocks). Keyboard and screen-reader users can jump past the repeated nav
+	// on every page without tabbing through every link.
 	return (
-		<main>
+		<>
+			<a
+				href='#main-content'
+				className='sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-bb-green focus:text-white focus:rounded-full focus:text-sm'
+			>
+				{dictionary.a11y.skipToContent}
+			</a>
+
 			<script
 				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
 				}}
 			/>
-			<p>
-				Homepage — locale: {lang} — {data.sections.length} sections
-			</p>
-		</main>
+
+			<Navbar lang={lang} settings={settings} />
+
+			<main id='main-content'>
+				<SectionRenderer sections={data.sections} />
+			</main>
+
+			<Footer lang={lang} settings={settings} dictionary={dictionary} />
+		</>
 	);
 }

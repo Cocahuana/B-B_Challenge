@@ -50,7 +50,9 @@ export default async function HomePage({ params }: Props) {
 	// TODO Phase 7: replace with <SectionRenderer sections={data.sections} />
 	return (
 		<main>
-			<p>Homepage — locale: {lang} — {data.sections.length} sections</p>
+			<p>
+				Homepage — locale: {lang} — {data.sections.length} sections
+			</p>
 		</main>
 	);
 }

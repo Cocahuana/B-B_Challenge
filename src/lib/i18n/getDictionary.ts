@@ -22,10 +22,8 @@ import type { Locale } from "./routing";
 // at this level — that's an acceptable trade-off. A dedicated i18n linting
 // tool (e.g. i18n-ally VS Code extension) can enforce key parity instead.
 const dictionaries = {
-	de: () =>
-		import("./dictionaries/de.json").then((m) => m.default),
-	en: () =>
-		import("./dictionaries/en.json").then((m) => m.default),
+	de: () => import("./dictionaries/de.json").then((m) => m.default),
+	en: () => import("./dictionaries/en.json").then((m) => m.default),
 } satisfies Record<Locale, () => Promise<unknown>>;
 
 export type Dictionary = Awaited<ReturnType<typeof dictionaries.de>>;

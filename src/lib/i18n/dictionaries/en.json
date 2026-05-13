@@ -1,71 +1,71 @@
 {
-  "nav": {
-    "menuToggle": "Open menu",
-    "close": "Close"
-  },
-  "hero": {
-    "appStoreBadgeAlt": "Get it on Google Play",
-    "appStoreBadgeAppleAlt": "Download on the App Store",
-    "googleRatingAlt": "Google rating"
-  },
-  "menu": {
-    "approvalLabel": "approval",
-    "reviewsLabel": "reviews"
-  },
-  "checklist": {
-    "checkIconAlt": "Checkmark"
-  },
-  "steps": {
-    "stepLabel": "Step"
-  },
-  "testimonials": {
-    "prevSlide": "Previous testimonial",
-    "nextSlide": "Next testimonial"
-  },
-  "form": {
-    "namePlaceholder": "Your name",
-    "companyPlaceholder": "Company name",
-    "emailPlaceholder": "E-mail",
-    "phonePlaceholder": "Your phone number",
-    "companySizePlaceholder": "Please select",
-    "companySizeLabel": "Company size",
-    "commentsPlaceholder": "Your comments",
-    "consentText": "I agree to be contacted by Bella&Bona based on this request.",
-    "nameLabel": "Name",
-    "companyLabel": "Company name",
-    "emailLabel": "E-mail",
-    "phoneLabel": "Phone number",
-    "commentsLabel": "Additional comments",
-    "requiredSuffix": "*",
-    "submitError": "Please fill in all required fields.",
-    "submitSuccess": "Thank you! We'll be in touch soon."
-  },
-  "faq": {
-    "expandLabel": "Show answer",
-    "collapseLabel": "Hide answer"
-  },
-  "footer": {
-    "followUs": "Follow us!",
-    "emailLabel": "Email",
-    "quickLinks": "Quick links",
-    "forEmployers": "for employers",
-    "forEmployees": "for employees",
-    "joinTeam": "Join the Bella&Bona team!",
-    "aboutUs": "about us",
-    "caseStudies": "case studies",
-    "blog": "blog",
-    "explore": "Explore",
-    "ourMenu": "our menu",
-    "businessCatering": "business catering",
-    "dailyLunch": "daily lunch",
-    "policies": "Our policies",
-    "terms": "terms of use",
-    "privacy": "privacy policy",
-    "cookies": "cookies",
-    "copyright": "Bella&Bona Copyright © 2025. Made with love.",
-    "logoAlt": "Bella&Bona"
-  },
-  "a11y": {
-    "skipToContent": "Skip to content"
-  }
+	"nav": {
+		"menuToggle": "Open menu",
+		"close": "Close"
+	},
+	"hero": {
+		"appStoreBadgeAlt": "Get it on Google Play",
+		"appStoreBadgeAppleAlt": "Download on the App Store",
+		"googleRatingAlt": "Google rating"
+	},
+	"menu": {
+		"approvalLabel": "approval",
+		"reviewsLabel": "reviews"
+	},
+	"checklist": {
+		"checkIconAlt": "Checkmark"
+	},
+	"steps": {
+		"stepLabel": "Step"
+	},
+	"testimonials": {
+		"prevSlide": "Previous testimonial",
+		"nextSlide": "Next testimonial"
+	},
+	"form": {
+		"namePlaceholder": "Your name",
+		"companyPlaceholder": "Company name",
+		"emailPlaceholder": "E-mail",
+		"phonePlaceholder": "Your phone number",
+		"companySizePlaceholder": "Please select",
+		"companySizeLabel": "Company size",
+		"commentsPlaceholder": "Your comments",
+		"consentText": "I agree to be contacted by Bella&Bona based on this request.",
+		"nameLabel": "Name",
+		"companyLabel": "Company name",
+		"emailLabel": "E-mail",
+		"phoneLabel": "Phone number",
+		"commentsLabel": "Additional comments",
+		"requiredSuffix": "*",
+		"submitError": "Please fill in all required fields.",
+		"submitSuccess": "Thank you! We'll be in touch soon."
+	},
+	"faq": {
+		"expandLabel": "Show answer",
+		"collapseLabel": "Hide answer"
+	},
+	"footer": {
+		"followUs": "Follow us!",
+		"emailLabel": "Email",
+		"quickLinks": "Quick links",
+		"forEmployers": "for employers",
+		"forEmployees": "for employees",
+		"joinTeam": "Join the Bella&Bona team!",
+		"aboutUs": "about us",
+		"caseStudies": "case studies",
+		"blog": "blog",
+		"explore": "Explore",
+		"ourMenu": "our menu",
+		"businessCatering": "business catering",
+		"dailyLunch": "daily lunch",
+		"policies": "Our policies",
+		"terms": "terms of use",
+		"privacy": "privacy policy",
+		"cookies": "cookies",
+		"copyright": "Bella&Bona Copyright © 2025. Made with love.",
+		"logoAlt": "Bella&Bona"
+	},
+	"a11y": {
+		"skipToContent": "Skip to content"
+	}
 }

@@ -8,13 +8,11 @@
 // (protected by Sanity's own authentication — no custom auth needed)
 
 import { defineConfig } from "sanity";
-import type { SchemaTypeDefinition } from "sanity";
 import { structureTool } from "sanity/structure";
 
-// Schemas are imported in Phase 3 — placeholder array for now so the
-// studio config file is valid and can be type-checked immediately.
-// Replace with: import { schemaTypes } from "@/sanity/schemas"
-const schemaTypes: SchemaTypeDefinition[] = [];
+// WHY: All schema types are imported from a central barrel.
+// Adding a new schema only requires creating the file + updating the index.
+import { schemaTypes } from "./src/sanity/schemas";
 
 export default defineConfig({
 	// ── Project identity ────────────────────────────────────────────────────────
@@ -26,14 +24,40 @@ export default defineConfig({
 
 	// ── Schema ──────────────────────────────────────────────────────────────────
 	// WHY: All schema types live in /src/sanity/schemas. The studio config just
-	// points to them — no schema logic should live here.
+	// points to them — no schema logic lives here.
 	schema: {
 		types: schemaTypes,
 	},
 
 	// ── Plugins ─────────────────────────────────────────────────────────────────
 	plugins: [
-		structureTool(),
+		// WHY: structureTool is configured with a custom structure so that the
+		// two singleton document types (homePage, siteSettings) are accessible
+		// via fixed document IDs in the sidebar — not via a "New document" menu.
+		// This is the Sanity v3/v4/v5 replacement for __experimental_actions.
+		structureTool({
+			structure: (S) =>
+				S.list()
+					.title("Content")
+					.items([
+						S.listItem().title("Home page").id("homePage").child(
+							S.document()
+								.schemaType("homePage")
+								// WHY: Fixed document ID "homePage" means there is always
+								// exactly one homepage document — no random Sanity ID.
+								.documentId("homePage"),
+						),
+						S.listItem()
+							.title("Site settings")
+							.id("siteSettings")
+							.child(
+								S.document()
+									.schemaType("siteSettings")
+									.documentId("siteSettings"),
+							),
+						S.divider(),
+					]),
+		}),
 		// WHY: @sanity/vision (GROQ query runner in the studio) is an optional
 		// peer dependency. Install it with `npm install @sanity/vision` to enable.
 		// It is excluded from the default install to keep the bundle lean.

@@ -13,6 +13,23 @@ export const ctaSection = defineType({
 	},
 	fields: [
 		defineField({
+			name: "colorScheme",
+			title: "Colour scheme",
+			type: "string",
+			// WHY: The design uses a salmon/pink CTA banner ("Holt euer Team…")
+			// and dark-green contact sections. One type, two visual modes,
+			// zero content duplication.
+			options: {
+				list: [
+					{ title: "Pink / salmon", value: "pink" },
+					{ title: "Dark green", value: "green" },
+				],
+				layout: "radio",
+			},
+			initialValue: "pink",
+			validation: (Rule) => Rule.required(),
+		}),
+		defineField({
 			name: "headline",
 			title: "Headline",
 			type: "localizedString",

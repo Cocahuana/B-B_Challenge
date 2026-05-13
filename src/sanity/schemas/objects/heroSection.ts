@@ -20,9 +20,30 @@ export const heroSection = defineType({
 			validation: (Rule) => Rule.required(),
 		}),
 		defineField({
-			name: "subheadline",
-			title: "Subheadline",
-			type: "localizedString",
+			name: "body",
+			title: "Body text",
+			type: "localizedText",
+			// WHY: localizedText (multi-line) not localizedString — the design
+			// shows "30+ daily options, all diets, delivered to the office…"
+			// which is a proper paragraph, not a single-line heading.
+		}),
+		defineField({
+			name: "appStoreLinks",
+			title: "App store links",
+			type: "object",
+			// WHY: Both links are optional — studio can launch before the app
+			// is published on one of the stores.
+			options: { collapsible: true, collapsed: false },
+			fields: [
+				defineField({ name: "playStore", title: "Google Play URL", type: "url" }),
+				defineField({ name: "appStore", title: "Apple App Store URL", type: "url" }),
+			],
+		}),
+		defineField({
+			name: "socialProofRating",
+			title: "Google rating (e.g. 4.7)",
+			type: "number",
+			validation: (Rule) => Rule.min(0).max(5),
 		}),
 		defineField({
 			name: "image",

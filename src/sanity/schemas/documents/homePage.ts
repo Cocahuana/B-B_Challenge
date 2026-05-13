@@ -59,11 +59,23 @@ export const homePage = defineType({
 			// WHY: The composable sections array is the core of the page model.
 			// Editors add, reorder, and remove sections without a code deploy.
 			// The front-end SectionRenderer maps each _type to its React component.
+			// Section order matches the design: hero → logos → stats → menu →
+			// checklist → cta → steps → testimonials → contact → form → faq.
 			of: [
 				defineArrayMember({ type: "heroSection" }),
-				defineArrayMember({ type: "featureSection" }),
+				defineArrayMember({ type: "logoBarSection" }),
+				defineArrayMember({ type: "statsSection" }),
+				defineArrayMember({ type: "menuShowcaseSection" }),
+				defineArrayMember({ type: "checklistSection" }),
 				defineArrayMember({ type: "ctaSection" }),
+				defineArrayMember({ type: "stepsSection" }),
+				defineArrayMember({ type: "testimonialsSection" }),
+				defineArrayMember({ type: "contactSection" }),
+				defineArrayMember({ type: "contactFormSection" }),
 				defineArrayMember({ type: "faqSection" }),
+				// WHY: featureSection stays available for future pages (e.g. /about)
+				// even though it isn't used in the homepage design.
+				defineArrayMember({ type: "featureSection" }),
 			],
 		}),
 	],

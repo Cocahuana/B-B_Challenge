@@ -10,6 +10,7 @@
 // generateMetadata (hreflang, OG, canonical) is added in Phase 6.
 
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { getDictionary } from "@/lib/i18n/getDictionary";
@@ -23,6 +24,35 @@ export function generateStaticParams() {
 	// Without this, every /de and /en request would fall back to on-demand SSR,
 	// defeating the ISR strategy defined in the page files.
 	return locales.map((lang) => ({ lang }));
+}
+
+// WHY: Hreflang alternates live in the layout (not the page) because they
+// must apply to EVERY page under /[lang]/ — not just the homepage. The layout
+// runs once per locale segment and injects the correct <link rel="alternate">
+// tags automatically for all child pages.
+//
+// WHY x-default points to /de: German is Bella&Bona's primary market.
+// x-default tells Google which URL to serve to users whose browser language
+// doesn't match any available locale — DE is the safest fallback.
+//
+// WHY no canonical here: canonical is page-specific (e.g. /de, /de/about).
+// Each page sets its own canonical in its own generateMetadata; the layout
+// only injects the cross-locale signals that are stable for all pages.
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ lang: Locale }>;
+}): Promise<Metadata> {
+	void params; // params not needed — alternates are the same for all locales
+	return {
+		alternates: {
+			languages: {
+				de: "/de",
+				en: "/en",
+				"x-default": "/de",
+			},
+		},
+	};
 }
 
 export default async function LangLayout({

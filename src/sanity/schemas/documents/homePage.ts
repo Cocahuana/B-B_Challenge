@@ -70,6 +70,7 @@ export const homePage = defineType({
 				defineArrayMember({ type: "ctaSection" }),
 				defineArrayMember({ type: "stepsSection" }),
 				defineArrayMember({ type: "testimonialsSection" }),
+				defineArrayMember({ type: "pricingCalculatorSection" }),
 				defineArrayMember({ type: "contactSection" }),
 				defineArrayMember({ type: "contactFormSection" }),
 				defineArrayMember({ type: "faqSection" }),

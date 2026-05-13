@@ -152,6 +152,24 @@ export const homePageQuery = /* groq */ `
           "question": coalesce(question[$lang], question.de),
           "answer":   coalesce(answer[$lang],   answer.de)
         }
+      },
+
+      _type == "pricingCalculatorSection" => {
+        "headline":           coalesce(headline[$lang],           headline.de),
+        daysOptions,
+        defaultDays,
+        employeeMin,
+        employeeMax,
+        employeeDefault,
+        subsidyMin,
+        subsidyMax,
+        subsidyDefault,
+        baseMealPrice,
+        "employeePriceLabel": coalesce(employeePriceLabel[$lang], employeePriceLabel.de),
+        "companyPriceLabel":  coalesce(companyPriceLabel[$lang],  companyPriceLabel.de),
+        "emailLabel":         coalesce(emailLabel[$lang],         emailLabel.de),
+        "ctaLabel":           coalesce(ctaLabel[$lang],           ctaLabel.de),
+        "footnote":           coalesce(footnote[$lang],           footnote.de)
       }
 
     )

@@ -162,6 +162,28 @@ export interface FaqSection {
 	items: Array<{ _key: string; question: string; answer: string }>;
 }
 
+export interface PricingCalculatorSection {
+	_type: "pricingCalculatorSection";
+	_key: string;
+	headline: string;
+	// Slider config — stored in Sanity so pricing can change without a deploy
+	daysOptions: number[];
+	defaultDays: number;
+	employeeMin: number;
+	employeeMax: number;
+	employeeDefault: number;
+	subsidyMin: number;
+	subsidyMax: number;
+	subsidyDefault: number;
+	baseMealPrice: number;
+	// Localised labels
+	employeePriceLabel: string;
+	companyPriceLabel: string;
+	emailLabel?: string;
+	ctaLabel: string;
+	footnote?: string;
+}
+
 // WHY: PageSection is a discriminated union keyed on `_type`.
 // TypeScript will narrow the type automatically in a switch/if-else on _type,
 // which means the SectionRenderer in Phase 7 gets full type safety
@@ -175,6 +197,7 @@ export type PageSection =
 	| CtaSection
 	| StepsSection
 	| TestimonialsSection
+	| PricingCalculatorSection
 	| ContactSection
 	| ContactFormSection
 	| FaqSection;

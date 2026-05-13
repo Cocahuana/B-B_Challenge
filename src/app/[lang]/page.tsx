@@ -19,8 +19,10 @@
 //   API for projects that do NOT enable that flag.
 
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n/routing";
-import { fetchHomePage } from "@/sanity/lib/fetch";
+import { fetchHomePage, fetchSiteSettings } from "@/sanity/lib/fetch";
+import { urlFor } from "@/sanity/lib/image";
 
 // ─── ISR: regenerate at most every 60 seconds ────────────────────────────────
 export const revalidate = 60;
@@ -30,13 +32,79 @@ type Props = {
 	params: Promise<{ lang: Locale }>;
 };
 
+// ─── SEO metadata ─────────────────────────────────────────────────────────────
+// WHY generateMetadata (not static `export const metadata`):
+//   The title, description, and OG image come from Sanity — they can be
+//   edited by the content team without a code deploy. A static export would
+//   bake the values at build time and ignore CMS changes until the next build.
+//
+// WHY fetchHomePage + fetchSiteSettings here AND in the component below:
+//   Both calls are wrapped in React's cache() in fetch.ts, so within a single
+//   render pass they fire only once — the second call returns the cached value.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { lang } = await params;
+
+	const [page, settings] = await Promise.all([
+		fetchHomePage(lang),
+		fetchSiteSettings(lang),
+	]);
+
+	const title =
+		page?.seo?.metaTitle ??
+		settings?.seoDefaults?.metaTitle ??
+		"Bella&Bona – Business Catering & Lunch für Teams";
+
+	const description =
+		page?.seo?.metaDescription ??
+		settings?.seoDefaults?.metaDescription ??
+		undefined;
+
+	// WHY: Prefer page-specific OG image; fall back to global siteSettings OG.
+	const ogImageRef = page?.seo?.ogImage ?? settings?.seoDefaults?.ogImage;
+	const ogImageUrl = ogImageRef
+		? urlFor(ogImageRef).width(1200).height(630).url()
+		: undefined;
+
+	// WHY og:locale uses BCP 47 country suffix (de_DE / en_US) rather than just
+	// the ISO 639-1 code — Facebook / Open Graph spec requires the full code.
+	const ogLocale = lang === "de" ? "de_DE" : "en_US";
+
+	return {
+		title,
+		description,
+		alternates: {
+			// WHY: Page-level canonical narrows down to this specific URL, while
+			// the layout-level hreflang declares the cross-locale relationship.
+			canonical: `/${lang}`,
+		},
+		openGraph: {
+			title,
+			description: description ?? undefined,
+			url: `/${lang}`,
+			siteName: settings?.orgName ?? "Bella&Bona",
+			locale: ogLocale,
+			type: "website",
+			images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : [],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title,
+			description: description ?? undefined,
+			images: ogImageUrl ? [ogImageUrl] : [],
+		},
+	};
+}
+
+// ─── Page component ───────────────────────────────────────────────────────────
 export default async function HomePage({ params }: Props) {
 	const { lang } = await params;
 
-	// WHY: fetchHomePage() passes `lang` as a GROQ parameter so the Sanity
-	// query projects localised strings directly — components receive plain
-	// strings, not { de, en } objects. See src/sanity/lib/queries.ts.
-	const data = await fetchHomePage(lang);
+	// WHY: Both fetches are cache()-memoised — no duplicate network calls even
+	// though generateMetadata above already called them in the same render pass.
+	const [data, settings] = await Promise.all([
+		fetchHomePage(lang),
+		fetchSiteSettings(lang),
+	]);
 
 	if (!data) {
 		// WHY: notFound() is appropriate here — the homePage document hasn't been
@@ -47,9 +115,42 @@ export default async function HomePage({ params }: Props) {
 		notFound();
 	}
 
-	// TODO Phase 7: replace with <SectionRenderer sections={data.sections} />
+	// ─── JSON-LD: Organization ─────────────────────────────────────────────
+	// WHY Organization (not WebPage): the homepage is primarily an entry point
+	// to understand who Bella&Bona is. Organization schema gives Google rich
+	// signals (logo, social profiles, URL) that appear in Knowledge Panels.
+	//
+	// WHY .replace(/</g, "\\u003c"): JSON.stringify() does NOT escape "<" by
+	// default. An unescaped "<" inside a <script> tag can prematurely close
+	// the script if a CMS string contains "</script>". Unicode escaping is the
+	// standard mitigation recommended by the Next.js JSON-LD guide.
+	const siteUrl =
+		process.env.NEXT_PUBLIC_SITE_URL ?? "https://bellabona.com";
+
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		name: settings?.orgName ?? "Bella&Bona",
+		url: siteUrl,
+		logo: settings?.logo
+			? urlFor(settings.logo).width(200).height(60).url()
+			: undefined,
+		sameAs: [
+			settings?.socialLinks?.linkedin,
+			settings?.socialLinks?.instagram,
+			settings?.socialLinks?.twitter,
+		].filter(Boolean),
+	};
+
+	// TODO Phase 7: replace <p> with <SectionRenderer sections={data.sections} />
 	return (
 		<main>
+			<script
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+				}}
+			/>
 			<p>
 				Homepage — locale: {lang} — {data.sections.length} sections
 			</p>

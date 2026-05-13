@@ -27,6 +27,7 @@ import { testimonialsSection } from "./objects/testimonialsSection";
 import { contactSection } from "./objects/contactSection";
 import { contactFormSection } from "./objects/contactFormSection";
 import { faqSection } from "./objects/faqSection";
+import { pricingCalculatorSection } from "./objects/pricingCalculatorSection";
 
 // ── Document types ────────────────────────────────────────────────────────────
 import { homePage } from "./documents/homePage";
@@ -54,6 +55,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
 	contactSection,
 	contactFormSection,
 	faqSection,
+	pricingCalculatorSection,
 	// Singleton documents
 	homePage,
 	siteSettings,

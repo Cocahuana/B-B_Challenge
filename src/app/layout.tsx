@@ -8,9 +8,19 @@
 //   • app/[lang]/layout.tsx  → localized routes (/de/*, /en/*)
 //   • app/studio/layout.tsx  → Sanity Studio (/studio/*)
 //
-// The app/page.tsx redirect never renders HTML (it returns a 3xx response),
-// so it does not need a layout providing html/body.
+// WHY metadataBase here (root layout): Next.js requires metadataBase in the
+// highest-level layout so that all child layouts/pages can use relative URLs
+// in metadata fields (canonical, og:image, twitter:image, alternates) without
+// repeating the full domain every time. Falls back to bellabona.com if the
+// env var is unset (e.g. CI, local dev without .env.local).
+import type { Metadata } from "next";
 import "./globals.css";
+
+export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_SITE_URL ?? "https://bellabona.com",
+	),
+};
 
 export default function RootLayout({
 	children,

@@ -25,7 +25,8 @@ export const pricingCalculatorSection = defineType({
 			// WHY: Array of numbers lets marketing decide whether to show 1-5 days,
 			// or only 3-5 days, without touching code.
 			initialValue: [1, 2, 3, 4, 5],
-			description: "Which day-count buttons to show. Default: [1, 2, 3, 4, 5]",
+			description:
+				"Which day-count buttons to show. Default: [1, 2, 3, 4, 5]",
 			validation: (Rule) => Rule.required().min(1),
 		}),
 		defineField({

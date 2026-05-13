@@ -84,7 +84,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			siteName: settings?.orgName ?? "Bella&Bona",
 			locale: ogLocale,
 			type: "website",
-			images: ogImageUrl ? [{ url: ogImageUrl, width: 1200, height: 630 }] : [],
+			images: ogImageUrl
+				? [{ url: ogImageUrl, width: 1200, height: 630 }]
+				: [],
 		},
 		twitter: {
 			card: "summary_large_image",
@@ -124,8 +126,7 @@ export default async function HomePage({ params }: Props) {
 	// default. An unescaped "<" inside a <script> tag can prematurely close
 	// the script if a CMS string contains "</script>". Unicode escaping is the
 	// standard mitigation recommended by the Next.js JSON-LD guide.
-	const siteUrl =
-		process.env.NEXT_PUBLIC_SITE_URL ?? "https://bellabona.com";
+	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://bellabona.com";
 
 	const jsonLd = {
 		"@context": "https://schema.org",
@@ -146,7 +147,7 @@ export default async function HomePage({ params }: Props) {
 	return (
 		<main>
 			<script
-				type="application/ld+json"
+				type='application/ld+json'
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
 				}}

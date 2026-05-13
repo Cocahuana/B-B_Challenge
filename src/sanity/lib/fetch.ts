@@ -22,10 +22,16 @@ import type { Locale } from "@/lib/i18n/routing";
 // drives the coalesce() projections for all localizedString/localizedText
 // fields. A single fetch returns a fully locale-resolved payload — no
 // client-side locale switching required.
-export const fetchHomePage = cache(async (lang: Locale): Promise<HomePage | null> => {
-	return sanityClient.fetch<HomePage | null>(homePageQuery, { lang });
-});
+export const fetchHomePage = cache(
+	async (lang: Locale): Promise<HomePage | null> => {
+		return sanityClient.fetch<HomePage | null>(homePageQuery, { lang });
+	},
+);
 
-export const fetchSiteSettings = cache(async (lang: Locale): Promise<SiteSettings | null> => {
-	return sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, { lang });
-});
+export const fetchSiteSettings = cache(
+	async (lang: Locale): Promise<SiteSettings | null> => {
+		return sanityClient.fetch<SiteSettings | null>(siteSettingsQuery, {
+			lang,
+		});
+	},
+);

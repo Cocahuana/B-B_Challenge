@@ -5,7 +5,9 @@
 // instead of constructing a builder themselves — one place to change if
 // we ever switch CDN domains or add image transformations globally.
 
-import imageUrlBuilder from "@sanity/image-url";
+// WHY named export: the default export of @sanity/image-url is deprecated
+// as of v2. The named `createImageUrlBuilder` is the current stable API.
+import { createImageUrlBuilder } from "@sanity/image-url";
 // WHY: SanityImageSource covers all valid inputs to the image builder:
 // plain image objects, asset references, and inline image documents.
 import type { SanityImageSource } from "@sanity/image-url";
@@ -13,7 +15,7 @@ import { sanityClient } from "./client";
 
 // WHY: We instantiate the builder once at module level (not per-render)
 // because it is a pure, stateless helper — no benefit to recreating it.
-const builder = imageUrlBuilder(sanityClient);
+const builder = createImageUrlBuilder(sanityClient);
 
 /**
  * Returns an @sanity/image-url builder pre-bound to this project.

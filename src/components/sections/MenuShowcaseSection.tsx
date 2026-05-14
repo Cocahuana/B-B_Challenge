@@ -1,10 +1,9 @@
 // MenuShowcaseSection — Server Component
 // WHY Server Component: static content from Sanity — food cards, approval
 // percentages, and the CTA link are pure render. No client state needed.
-import Image from "next/image";
 import Link from "next/link";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { MenuShowcaseSection as MenuShowcaseSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -34,7 +33,7 @@ export default function MenuShowcaseSection({ section }: Props) {
 				{/* WHY 3-column grid on lg+: matches the 3×2 card layout in the design.
 				    On mobile, 1 column; on md, 2 columns — all without any JS. */}
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12'>
-					{cards.map(
+					{(cards ?? []).map(
 						({
 							_key,
 							image,
@@ -42,77 +41,69 @@ export default function MenuShowcaseSection({ section }: Props) {
 							name,
 							approvalPct,
 							reviewCount,
-						}) => {
-							const cardImageUrl = urlFor(image)
-								.width(400)
-								.height(280)
-								.auto("format")
-								.fit("crop")
-								.url();
+						}) => (
+							<article
+								key={_key}
+								className='bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow'
+								aria-label={name}
+							>
+								{/* Food image */}
+								{/* WHY lazy (default): food cards below the hero are not LCP
+							    candidates. Default lazy loading defers these until near-viewport. */}
+								<div className='relative h-44 overflow-hidden'>
+									<SanityImage
+										sanityRef={image}
+										alt={image.alt ?? name}
+										fill
+										width={400}
+										height={280}
+										sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
+										className='object-cover'
+									/>
+								</div>
 
-							return (
-								<article
-									key={_key}
-									className='bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow'
-									aria-label={name}
-								>
-									{/* Food image */}
-									<div className='relative h-44 overflow-hidden'>
-										<Image
-											src={cardImageUrl}
-											alt={image.alt ?? name}
-											fill
-											className='object-cover'
-											// WHY lazy (default): food cards below the hero are not LCP
-											// candidates. Default lazy loading defers these until near-viewport.
-											sizes='(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
-										/>
-									</div>
+								<div className='p-4'>
+									{tag && (
+										<span className='inline-block bg-bb-lime-soft text-bb-green text-xs font-semibold px-2 py-0.5 rounded-full mb-2'>
+											{tag}
+										</span>
+									)}
 
-									<div className='p-4'>
-										{/* Tag pill */}
-										{tag && (
-											<span className='inline-block bg-bb-lime-soft text-bb-green text-xs font-semibold px-2 py-0.5 rounded-full mb-2'>
-												{tag}
-											</span>
+									<UI.Title
+										as='h3'
+										className='font-bold text-gray-900 text-sm mb-2 line-clamp-2'
+									>
+										{name}
+									</UI.Title>
+
+									{/* Stats row */}
+									<UI.Flex align='center' gap='0.75rem'>
+										{approvalPct !== undefined && (
+											<UI.Text
+												as='span'
+												className='text-xs text-gray-500 flex items-center gap-1'
+											>
+												<span aria-hidden='true'>
+													👍
+												</span>
+												{approvalPct}%
+											</UI.Text>
 										)}
-
-										<UI.Title
-											as='h3'
-											className='font-bold text-gray-900 text-sm mb-2 line-clamp-2'
-										>
-											{name}
-										</UI.Title>
-
-										{/* Stats row */}
-										<UI.Flex align='center' gap='0.75rem'>
-											{approvalPct !== undefined && (
-												<UI.Text
-													as='span'
-													className='text-xs text-gray-500 flex items-center gap-1'
-												>
-													<span aria-hidden='true'>
-														👍
-													</span>
-													{approvalPct}%
-												</UI.Text>
-											)}
-											{reviewCount !== undefined && (
-												<UI.Text
-													as='span'
-													className='text-xs text-gray-500 flex items-center gap-1'
-												>
-													<span aria-hidden='true'>
-														⭐
-													</span>
-													{reviewCount}
-												</UI.Text>
-											)}
-										</UI.Flex>
-									</div>
-								</article>
-							);
-						},
+										{reviewCount !== undefined && (
+											<UI.Text
+												as='span'
+												className='text-xs text-gray-500 flex items-center gap-1'
+											>
+												<span aria-hidden='true'>
+													⭐
+												</span>
+												{reviewCount}
+											</UI.Text>
+										)}
+									</UI.Flex>
+								</div>
+							</article>
+						),
 					)}
 				</div>
 

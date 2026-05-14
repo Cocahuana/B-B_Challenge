@@ -4,9 +4,8 @@
 // quote card — no carousel autoplay means no client JS is needed.
 // If a future iteration requires a rotating carousel, that can be isolated
 // to a narrow "use client" wrapper without refactoring this file.
-import Image from "next/image";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { TestimonialsSection as TestimonialsSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -22,14 +21,7 @@ export default function TestimonialsSection({ section }: Props) {
 
 	if (!featured) return null;
 
-	const photoUrl = featured.authorPhoto
-		? urlFor(featured.authorPhoto)
-				.width(160)
-				.height(160)
-				.auto("format")
-				.fit("crop")
-				.url()
-		: null;
+
 
 	return (
 		<UI.Box
@@ -84,14 +76,16 @@ export default function TestimonialsSection({ section }: Props) {
 					</div>
 
 					{/* Author photo */}
-					{photoUrl && (
+					{featured.authorPhoto && (
 						<div className='hidden lg:block relative w-32 h-32 rounded-full overflow-hidden flex-shrink-0 border-4 border-bb-lime/20'>
-							<Image
-								src={photoUrl}
+							<SanityImage
+								sanityRef={featured.authorPhoto}
 								alt={featured.authorName}
 								fill
-								className='object-cover'
+								width={160}
+								height={160}
 								sizes='128px'
+								className='object-cover'
 							/>
 						</div>
 					)}

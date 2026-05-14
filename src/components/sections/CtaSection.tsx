@@ -4,10 +4,9 @@
 // style. Two schemes ("pink" = blush + rose button, "green" = lime tint +
 // dark green button) let the same schema type appear with different visual
 // personalities at different points in the page narrative.
-import Image from "next/image";
 import Link from "next/link";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { CtaSection as CtaSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -34,15 +33,6 @@ export default function CtaSection({ section }: Props) {
 
 	const bodyColor =
 		colorScheme === "pink" ? "text-gray-600" : "text-gray-600";
-
-	const imageUrl = backgroundImage
-		? urlFor(backgroundImage)
-				.width(700)
-				.height(500)
-				.auto("format")
-				.fit("crop")
-				.url()
-		: null;
 
 	return (
 		<UI.Box
@@ -71,7 +61,7 @@ export default function CtaSection({ section }: Props) {
 
 						{ctas && ctas.length > 0 && (
 							<UI.Flex gap='0.75rem' wrap='wrap'>
-								{ctas.map((cta) => (
+								{(ctas ?? []).map((cta) => (
 									<Link
 										key={cta.href}
 										href={cta.href}
@@ -90,16 +80,21 @@ export default function CtaSection({ section }: Props) {
 					</div>
 
 					{/* ── Right: image ───────────────────────────────────── */}
-					{imageUrl && (
+					{backgroundImage && (
 						<div
 							className={`relative h-72 lg:h-96 rounded-2xl overflow-hidden ${imageBg}`}
 						>
-							<Image
-								src={imageUrl}
-								alt={backgroundImage?.alt ?? headline}
+							{/* WHY mix-blend-multiply: blends the food photo against the coloured
+							    container background — white areas become transparent, making the
+							    image feel like it belongs to the section rather than a boxed crop. */}
+							<SanityImage
+								sanityRef={backgroundImage}
+								alt={backgroundImage.alt ?? headline}
 								fill
-								className='object-cover object-center mix-blend-multiply'
+								width={700}
+								height={500}
 								sizes='(min-width: 1024px) 50vw, 100vw'
+								className='object-cover object-center mix-blend-multiply'
 							/>
 						</div>
 					)}

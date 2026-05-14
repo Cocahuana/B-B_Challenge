@@ -2,9 +2,8 @@
 // WHY Server Component: static contact info (name, email, phone, photo) from
 // Sanity. The interactive form lives in ContactFormSection which is a separate
 // Client Component — this section is purely presentational.
-import Image from "next/image";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { ContactSection as ContactSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -22,14 +21,7 @@ export default function ContactSection({ section }: Props) {
 		personPhoto,
 	} = section;
 
-	const photoUrl = personPhoto
-		? urlFor(personPhoto)
-				.width(300)
-				.height(300)
-				.auto("format")
-				.fit("crop")
-				.url()
-		: null;
+
 
 	return (
 		// WHY bg-bb-green + full height: the contact panel is visually paired with
@@ -54,14 +46,16 @@ export default function ContactSection({ section }: Props) {
 
 			{/* ── Contact person card ─────────────────────────────────── */}
 			<UI.Flex align='center' gap='1rem'>
-				{photoUrl && (
+				{personPhoto && (
 					<div className='relative w-16 h-16 rounded-full overflow-hidden border-2 border-bb-lime/30 flex-shrink-0'>
-						<Image
-							src={photoUrl}
+						<SanityImage
+							sanityRef={personPhoto}
 							alt={personName}
 							fill
-							className='object-cover'
+							width={128}
+							height={128}
 							sizes='64px'
+							className='object-cover'
 						/>
 					</div>
 				)}

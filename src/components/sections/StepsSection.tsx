@@ -2,10 +2,9 @@
 // WHY Server Component: a static numbered process walkthrough. No state.
 // The "Step 01 / 02 / 03" pattern is a well-known UX pattern for onboarding
 // flows — it reduces perceived complexity by chunking into three steps.
-import Image from "next/image";
 import Link from "next/link";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { StepsSection as StepsSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -32,21 +31,11 @@ export default function StepsSection({ section }: Props) {
 				{/* WHY equal-column grid: each step gets identical visual weight.
 				    Steps communicate a sequence, not a hierarchy. */}
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-12'>
-					{steps.map(
+					{(steps ?? []).map(
 						({ _key, badge, image, title, description }, index) => {
-							const stepImageUrl = image
-								? urlFor(image)
-										.width(400)
-										.height(260)
-										.auto("format")
-										.fit("crop")
-										.url()
-								: null;
-
 							// WHY ordinal padding: "01" vs "1" matches the design's typographic
 							// convention — left-padded ordinals read as a visual sequence marker.
 							const ordinal = String(index + 1).padStart(2, "0");
-
 							return (
 								<article
 									key={_key}
@@ -54,14 +43,16 @@ export default function StepsSection({ section }: Props) {
 									aria-label={`Step ${ordinal}: ${title}`}
 								>
 									{/* Step image */}
-									{stepImageUrl && (
+									{image && (
 										<div className='relative h-48 rounded-xl overflow-hidden bg-bb-surface'>
-											<Image
-												src={stepImageUrl}
-												alt={image?.alt ?? title}
+											<SanityImage
+												sanityRef={image}
+												alt={image.alt ?? title}
 												fill
-												className='object-cover object-center'
+												width={400}
+												height={260}
 												sizes='(min-width: 768px) 33vw, 100vw'
+												className='object-cover object-center'
 											/>
 										</div>
 									)}

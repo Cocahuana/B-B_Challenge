@@ -54,7 +54,7 @@ export default function FaqSection({ section }: Props) {
 				{/* WHY <dl>: definition lists semantically pair questions (dt) with
 				    answers (dd), which is the correct markup for FAQ content. */}
 				<dl className='space-y-2'>
-					{items.map(({ _key, question, answer }) => {
+					{(items ?? []).map(({ _key, question, answer }) => {
 						const isOpen = openKeys.has(_key);
 						const answerId = `faq-answer-${_key}`;
 

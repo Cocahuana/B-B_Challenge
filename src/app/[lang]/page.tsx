@@ -21,6 +21,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n/routing";
+import { locales } from "@/lib/i18n/routing";
 import { fetchHomePage, fetchSiteSettings } from "@/sanity/lib/fetch";
 import { getDictionary } from "@/lib/i18n/getDictionary";
 import { urlFor } from "@/sanity/lib/image";
@@ -33,7 +34,9 @@ export const revalidate = 60;
 
 type Props = {
 	// WHY: params is a Promise in Next.js 16 — see dynamic-routes.md
-	params: Promise<{ lang: Locale }>;
+	// WHY string (not Locale): Next.js 16 PageProps<"/[lang]"> widens params to
+	// { lang: string }. Runtime notFound() check narrows to Locale before use.
+	params: Promise<{ lang: string }>;
 };
 
 // ─── SEO metadata ─────────────────────────────────────────────────────────────
@@ -48,9 +51,17 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { lang } = await params;
 
+	// WHY guard here (not just in the layout): generateMetadata runs before the
+	// layout's notFound() can fire. Without this, an invalid [lang] value — e.g.
+	// "sw.js" from a browser extension requesting /sw.js — gets passed to Sanity
+	// as $lang, which rejects it because "." is not valid in GROQ attribute names.
+	if (!locales.includes(lang as Locale)) return {};
+	// Safe cast: guard above guarantees lang is a valid Locale beyond this line.
+	const locale = lang as Locale;
+
 	const [page, settings] = await Promise.all([
-		fetchHomePage(lang),
-		fetchSiteSettings(lang),
+		fetchHomePage(locale),
+		fetchSiteSettings(locale),
 	]);
 
 	const title =
@@ -71,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 	// WHY og:locale uses BCP 47 country suffix (de_DE / en_US) rather than just
 	// the ISO 639-1 code — Facebook / Open Graph spec requires the full code.
-	const ogLocale = lang === "de" ? "de_DE" : "en_US";
+	const ogLocale = locale === "de" ? "de_DE" : "en_US";
 
 	return {
 		title,
@@ -79,12 +90,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		alternates: {
 			// WHY: Page-level canonical narrows down to this specific URL, while
 			// the layout-level hreflang declares the cross-locale relationship.
-			canonical: `/${lang}`,
+			canonical: `/${locale}`,
 		},
 		openGraph: {
 			title,
 			description: description ?? undefined,
-			url: `/${lang}`,
+			url: `/${locale}`,
 			siteName: settings?.orgName ?? "Bella&Bona",
 			locale: ogLocale,
 			type: "website",
@@ -105,11 +116,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HomePage({ params }: Props) {
 	const { lang } = await params;
 
+	// WHY guard here (not relying solely on the layout): in Next.js App Router
+	// streaming SSR, the page component and layout component can start executing
+	// concurrently — the layout's notFound() does not block this function from
+	// starting. Without this guard, an invalid lang (e.g. "sw.js" from a browser
+	// extension requesting /sw.js) reaches fetchSiteSettings with an invalid
+	// $lang GROQ parameter and triggers a Sanity 400 error.
+	if (!locales.includes(lang as Locale)) notFound();
+	const locale = lang as Locale;
+
 	// WHY Both fetches are cache()-memoised — no duplicate network calls even
 	// though generateMetadata above already called them in the same render pass.
 	const [data, settings] = await Promise.all([
-		fetchHomePage(lang),
-		fetchSiteSettings(lang),
+		fetchHomePage(locale),
+		fetchSiteSettings(locale),
 	]);
 
 	if (!data) {
@@ -125,7 +145,7 @@ export default async function HomePage({ params }: Props) {
 	// consumes dictionary strings directly. The call is cheap — getDictionary
 	// uses dynamic import (code-split per locale) and is cached by Node module
 	// resolution after the first call in the same request.
-	const dictionary = await getDictionary(lang);
+	const dictionary = await getDictionary(locale);
 
 	// ─── JSON-LD: Organization ─────────────────────────────────────────────
 	// WHY Organization (not WebPage): the homepage is primarily an entry point
@@ -172,13 +192,13 @@ export default async function HomePage({ params }: Props) {
 				}}
 			/>
 
-			<Navbar lang={lang} settings={settings} />
+			<Navbar lang={locale} settings={settings} />
 
 			<main id='main-content'>
 				<SectionRenderer sections={data.sections} />
 			</main>
 
-			<Footer lang={lang} settings={settings} dictionary={dictionary} />
+			<Footer lang={locale} settings={settings} dictionary={dictionary} />
 		</>
 	);
 }

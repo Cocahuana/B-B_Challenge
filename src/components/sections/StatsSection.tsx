@@ -65,32 +65,34 @@ export default function StatsSection({ section }: Props) {
 						gridTemplateColumns: `repeat(${Math.min(items.length, 3)}, minmax(0, 1fr))`,
 					}}
 				>
-					{items.map(({ _key, value, label, description }) => (
-						<div key={_key} className={cardClass}>
-							{/* WHY aria-label on the value+label pair: combining them in one
+					{(items ?? []).map(
+						({ _key, value, label, description }) => (
+							<div key={_key} className={cardClass}>
+								{/* WHY aria-label on the value+label pair: combining them in one
 							    label prevents screen readers from reading them as two separate
 							    disjointed pieces of text. */}
-							<UI.Text
-								as='span'
-								className={valueClass}
-								aria-label={`${value} — ${label}`}
-							>
-								{value}
-							</UI.Text>
-							<UI.Text
-								as='span'
-								className={labelClass}
-								aria-hidden='true'
-							>
-								{label}
-							</UI.Text>
-							{description && (
-								<UI.Text as='span' className={descClass}>
-									{description}
+								<UI.Text
+									as='span'
+									className={valueClass}
+									aria-label={`${value} — ${label}`}
+								>
+									{value}
 								</UI.Text>
-							)}
-						</div>
-					))}
+								<UI.Text
+									as='span'
+									className={labelClass}
+									aria-hidden='true'
+								>
+									{label}
+								</UI.Text>
+								{description && (
+									<UI.Text as='span' className={descClass}>
+										{description}
+									</UI.Text>
+								)}
+							</div>
+						),
+					)}
 				</div>
 			</div>
 		</UI.Box>

@@ -3,9 +3,8 @@
 // This section exists purely to build social proof ("Loved by X00 customers").
 // Rendering it on the server means the logos appear in the initial HTML
 // before any JavaScript executes — important for perceived performance.
-import Image from "next/image";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { LogoBarSection as LogoBarSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -38,26 +37,24 @@ export default function LogoBarSection({ section }: Props) {
 						gap='2rem'
 						className='opacity-60'
 					>
-						{logos.map(({ _key, image, alt }) => {
-							const logoUrl = urlFor(image)
-								.height(48)
-								.auto("format")
-								.url();
-							return (
-								<div
-									key={_key}
-									className='relative h-8 w-24 flex-shrink-0'
-								>
-									<Image
-										src={logoUrl}
-										alt={alt}
-										fill
-										className='object-contain'
-										sizes='96px'
-									/>
-								</div>
-							);
-						})}
+						{(logos ?? []).map(({ _key, image, alt }) => (
+							<div
+								key={_key}
+								className='relative h-8 w-24 flex-shrink-0'
+							>
+								{/* WHY height hint only (no width): logos vary in aspect ratio.
+								    Constraining only height lets Sanity return the natural width,
+								    preventing distortion. object-contain handles the rest. */}
+								<SanityImage
+									sanityRef={image}
+									alt={alt}
+									fill
+									height={48}
+									sizes='96px'
+									className='object-contain'
+								/>
+							</div>
+						))}
 					</UI.Flex>
 				)}
 			</div>

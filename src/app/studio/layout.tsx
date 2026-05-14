@@ -1,18 +1,15 @@
-// WHY: The /studio route needs its own root layout (html/body) because
-// app/layout.tsx is a pass-through — each leaf subtree provides its own.
-// Without this, Next.js has no layout supplying the required html/body tags
-// for the studio routes, which would cause a build error.
+// WHY: The /studio route gets its own layout to isolate the Sanity Studio
+// from the localized routes. No DictionaryProvider or font setup needed —
+// the Studio is a self-contained SPA with its own UI.
+//
+// WHY no <html>/<body> here: Next.js 16.2.6 requires the root app/layout.tsx
+//   to own these tags. The root layout now provides them for all routes,
+//   including /studio/*.
 
 export default function StudioLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
-	return (
-		// WHY: No lang attribute here — the Studio is an internal authoring
-		// tool, not a public-facing page. Leaving it unset is acceptable.
-		<html>
-			<body>{children}</body>
-		</html>
-	);
+	return <>{children}</>;
 }

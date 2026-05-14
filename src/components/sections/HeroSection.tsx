@@ -3,10 +3,9 @@
 // the server and sent as HTML, which means the LCP candidate (hero image) is
 // in the initial HTML payload — better for Core Web Vitals. The interactive
 // elements (app-store links) are plain anchor tags, not stateful.
-import Image from "next/image";
 import Link from "next/link";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { HeroSection as HeroSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -16,17 +15,6 @@ interface Props {
 export default function HeroSection({ section }: Props) {
 	const { headline, body, image, ctas, appStoreLinks, socialProofRating } =
 		section;
-
-	const heroImageUrl = image
-		? urlFor(image)
-				// WHY .auto("format"): Sanity CDN serves WebP to browsers that support it,
-				// falling back to JPEG. This single call handles format negotiation.
-				.width(900)
-				.height(700)
-				.auto("format")
-				.fit("crop")
-				.url()
-		: null;
 
 	return (
 		// WHY min-h-[90vh]: the hero should dominate the viewport but not force
@@ -57,7 +45,7 @@ export default function HeroSection({ section }: Props) {
 					{/* CTA buttons */}
 					{ctas && ctas.length > 0 && (
 						<UI.Flex gap='0.75rem' wrap='wrap'>
-							{ctas.map((cta) => (
+							{(ctas ?? []).map((cta) => (
 								<Link
 									key={cta.href}
 									href={cta.href}
@@ -149,20 +137,23 @@ export default function HeroSection({ section }: Props) {
 				</div>
 
 				{/* ── Right panel: hero image ───────────────────────────────── */}
-				{heroImageUrl && (
-					// WHY relative + overflow-hidden: next/image with fill layout
-					// needs a positioned ancestor of known dimensions.
+				{image && (
+					// WHY relative + overflow-hidden: next/image fill needs a
+					// positioned ancestor of known dimensions.
 					<div className='relative hidden lg:block overflow-hidden'>
-						<Image
-							src={heroImageUrl}
-							alt={image?.alt ?? headline}
+						{/* WHY priority + width/height hints: priority adds fetchpriority="high"
+						    and a <link rel="preload"> — critical for LCP score.
+						    width=900/height=700 tells the Sanity CDN the maximum source size
+						    needed, avoiding a full-resolution origin fetch. */}
+						<SanityImage
+							sanityRef={image}
+							alt={image.alt ?? headline}
 							fill
-							// WHY priority: the hero image is almost certainly the LCP
-							// element. priority tells Next.js to preload it — without this
-							// flag, LCP scores suffer noticeably (images lazy-load by default).
 							priority
-							className='object-cover object-center'
+							width={900}
+							height={700}
 							sizes='(min-width: 1024px) 50vw, 100vw'
+							className='object-cover object-center'
 						/>
 					</div>
 				)}

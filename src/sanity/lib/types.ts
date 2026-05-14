@@ -18,6 +18,12 @@ export interface SanityImageRef {
 	crop?: { top: number; bottom: number; left: number; right: number };
 	// alt is projected by the query; may be undefined for non-content images
 	alt?: string;
+	// WHY lqip: Sanity stores a ~40-byte base64-encoded Low Quality Image
+	// Placeholder in asset metadata. Projected via `asset->metadata.lqip`
+	// in GROQ and passed to next/image as blurDataURL for placeholder="blur".
+	// This eliminates the visible "pop" of below-the-fold images appearing
+	// on first load without any JavaScript or client-side work.
+	lqip?: string;
 }
 
 export interface CTA {

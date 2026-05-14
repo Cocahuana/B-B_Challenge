@@ -42,10 +42,39 @@ body {
 }
 
 /* WHY: smooth scrolling makes in-page anchor links (FAQ, sections) feel
-   polished without JavaScript. prefers-reduced-motion guard is respected
-   automatically by the browser when this is CSS-only. */
+   polished without JavaScript. Scoped to no-preference so users who have
+   requested reduced motion get instant scrolling instead. */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+  }
+}
+
+/* ── Reduced-motion: disable all transitions and animations ──────────────────
+   WHY: WCAG 2.3.3 (AAA) recommends respecting prefers-reduced-motion.
+   Users with vestibular disorders, epilepsy, or motion sensitivity can be
+   harmed by CSS transitions and animations. This block disables them
+   globally so Tailwind utility classes like `transition-colors`, `animate-*`
+   and `hover:shadow-md` do not trigger motion for these users.
+
+   WHY !important: Tailwind classes have varying specificity. Using !important
+   here guarantees the rule wins regardless of component-level class specificity
+   — matching the established pattern in Bootstrap 5 and accessible design
+   systems (GOV.UK, NHS Digital).
+
+   WHY 0.01ms instead of 0s: Some browsers skip transition end events when
+   duration is exactly 0, breaking JavaScript listeners that rely on
+   `transitionend`. 0.01ms fires the event but is imperceptibly fast.
+   ──────────────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    /* scroll-behavior overrides the smooth-scroll rule above for these users */
+    scroll-behavior: auto !important;
   }
 }

@@ -39,7 +39,10 @@ export const homePageQuery = /* groq */ `
       _type == "heroSection" => {
         "headline": coalesce(headline[$lang], headline.de),
         "body":     coalesce(body[$lang],     body.de),
-        image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de) },
+        // WHY lqip projected here: even for the priority hero image we fetch
+        // LQIP so the data is available; placeholder="blur" is skipped for
+        // priority images in SanityImage (they're preloaded immediately anyway).
+        image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de), "lqip": asset->metadata.lqip },
         "ctas": ctas[]{
           "label": coalesce(label[$lang], label.de),
           href,
@@ -70,7 +73,7 @@ export const homePageQuery = /* groq */ `
         "cards": cards[]{
           _key,
           "tag":  coalesce(tag[$lang],  tag.de),
-          image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de) },
+          image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de), "lqip": asset->metadata.lqip },
           "name": coalesce(name[$lang], name.de),
           approvalPct,
           reviewCount
@@ -83,7 +86,7 @@ export const homePageQuery = /* groq */ `
       },
 
       _type == "checklistSection" => {
-        image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de) },
+        image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de), "lqip": asset->metadata.lqip },
         "items": items[]{
           _key,
           "title":       coalesce(title[$lang],       title.de),
@@ -100,7 +103,7 @@ export const homePageQuery = /* groq */ `
           href,
           variant
         },
-        backgroundImage{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de) }
+        backgroundImage{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de), "lqip": asset->metadata.lqip }
       },
 
       _type == "stepsSection" => {
@@ -110,7 +113,7 @@ export const homePageQuery = /* groq */ `
           "badge":       coalesce(badge[$lang],       badge.de),
           "title":       coalesce(title[$lang],       title.de),
           "description": coalesce(description[$lang], description.de),
-          image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de) }
+          image{ asset, hotspot, crop, "alt": coalesce(alt[$lang], alt.de), "lqip": asset->metadata.lqip }
         },
         "cta": {
           "label":   coalesce(cta.label[$lang], cta.label.de),
@@ -126,7 +129,7 @@ export const homePageQuery = /* groq */ `
           "quote":      coalesce(quote[$lang], quote.de),
           authorName,
           authorRole,
-          authorPhoto{ asset, hotspot, crop }
+          authorPhoto{ asset, hotspot, crop, "lqip": asset->metadata.lqip }
         }
       },
 
@@ -137,7 +140,7 @@ export const homePageQuery = /* groq */ `
         personRole,
         personEmail,
         personPhone,
-        personPhoto{ asset, hotspot, crop }
+        personPhoto{ asset, hotspot, crop, "lqip": asset->metadata.lqip }
       },
 
       _type == "contactFormSection" => {

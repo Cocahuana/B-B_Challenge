@@ -2,9 +2,8 @@
 // WHY Server Component: static text + image. No interactivity.
 // The visual pattern (image on left, checklist on right) is common in
 // feature/benefit sections. On mobile it stacks vertically (image first).
-import Image from "next/image";
 import * as UI from "@/components/ui";
-import { urlFor } from "@/sanity/lib/image";
+import SanityImage from "@/components/SanityImage";
 import type { ChecklistSection as ChecklistSectionType } from "@/sanity/lib/types";
 
 interface Props {
@@ -13,10 +12,6 @@ interface Props {
 
 export default function ChecklistSection({ section }: Props) {
 	const { image, items } = section;
-
-	const imageUrl = image
-		? urlFor(image).width(600).height(700).auto("format").fit("crop").url()
-		: null;
 
 	return (
 		<UI.Box
@@ -27,21 +22,23 @@ export default function ChecklistSection({ section }: Props) {
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center'>
 					{/* ── Left: image ─────────────────────────────────────────── */}
-					{imageUrl && (
+					{image && (
 						<div className='relative h-80 lg:h-[500px] rounded-2xl overflow-hidden'>
-							<Image
-								src={imageUrl}
-								alt={image?.alt ?? ""}
+							<SanityImage
+								sanityRef={image}
+								alt={image.alt ?? ""}
 								fill
-								className='object-cover object-center'
+								width={600}
+								height={700}
 								sizes='(min-width: 1024px) 50vw, 100vw'
+								className='object-cover object-center'
 							/>
 						</div>
 					)}
 
 					{/* ── Right: checklist ──────────────────────────────────── */}
 					<ul className='space-y-6' aria-label='Feature checklist'>
-						{items.map(({ _key, title, description }) => (
+						{(items ?? []).map(({ _key, title, description }) => (
 							<li key={_key} className='flex gap-4 items-start'>
 								{/* WHY role="img" + aria-hidden on the check icon:
 								    The list item title conveys the meaning; the decorative

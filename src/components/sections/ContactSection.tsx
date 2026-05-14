@@ -21,8 +21,6 @@ export default function ContactSection({ section }: Props) {
 		personPhoto,
 	} = section;
 
-
-
 	return (
 		// WHY bg-bb-green + full height: the contact panel is visually paired with
 		// the ContactFormSection beside it (they share a row in SectionRenderer).

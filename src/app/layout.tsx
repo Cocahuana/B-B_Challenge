@@ -28,12 +28,12 @@
 //   layout so all child layouts/pages can use relative URLs in metadata fields
 //   (canonical, og:image, alternates) without repeating the full domain.
 import type { Metadata } from "next";
-import { Inter, Barlow_Condensed } from "next/font/google";
+import { Figtree, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const figtree = Figtree({
 	subsets: ["latin"],
-	variable: "--font-inter",
+	variable: "--font-figtree",
 	display: "swap",
 });
 
@@ -58,12 +58,12 @@ export default function RootLayout({
 	return (
 		// WHY suppressHydrationWarning: the lang attribute is updated client-side
 		// by LangSetter in [lang]/layout.tsx — see comment at top of file.
-		// WHY font className on <html>: CSS variables (--font-inter, --font-barlow)
+		// WHY font className on <html>: CSS variables (--font-figtree, --font-barlow)
 		// must be declared on an ancestor element that contains all consumers.
 		// Putting them on <html> makes them available to every descendant.
 		<html
 			suppressHydrationWarning
-			className={`${inter.variable} ${barlowCondensed.variable}`}
+			className={`${figtree.variable} ${barlowCondensed.variable}`}
 		>
 			<body suppressHydrationWarning>{children}</body>
 		</html>

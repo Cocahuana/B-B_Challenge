@@ -39,19 +39,21 @@ export default function Navbar({ lang, settings }: NavbarProps) {
 		<header className='sticky top-0 z-50 bg-white border-b border-gray-100'>
 			{/* WHY max-w-7xl: sections use the same max-width — nav aligns with content */}
 			<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-				<div className='flex items-center justify-between h-16'>
+				<div className='flex items-center justify-between h-16 relative'>
 					{/* ── Logo ─────────────────────────────────────────────────── */}
-					<Link
-						href={`/${lang}`}
-						className='font-black text-xl tracking-tight text-bb-green'
-						aria-label={`${orgName} — zurück zur Startseite`}
-					>
-						{orgName.toUpperCase()}
-					</Link>
+					<div className='flex-1 flex items-center'>
+						<Link
+							href={`/${lang}`}
+							className='font-black text-xl tracking-tight text-bb-green'
+							aria-label={`${orgName} — zurück zur Startseite`}
+						>
+							{orgName.toUpperCase()}
+						</Link>
+					</div>
 
-					{/* ── Desktop nav ──────────────────────────────────────────── */}
+					{/* ── Desktop nav (Center) ─────────────────────────────────── */}
 					<nav
-						className='hidden md:flex items-center gap-6'
+						className='hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-6'
 						aria-label='Hauptnavigation'
 					>
 						{NAV_LINKS.map(({ labelKey, href, hasDropdown }) => (
@@ -71,45 +73,48 @@ export default function Navbar({ lang, settings }: NavbarProps) {
 								)}
 							</Link>
 						))}
-						<Link
-							href='#'
-							className='text-sm font-medium text-gray-700 hover:text-bb-green underline transition-colors'
-						>
-							Download menu
-						</Link>
 					</nav>
 
 					{/* ── Right actions ────────────────────────────────────────── */}
-					<div className='flex items-center gap-3'>
-						{/* ── Language toggle ──────────────────────────────────── */}
-						{/* WHY: Display both locales with a separator. The current locale
-						    is visually emphasised; the other is a link. This pattern
-						    (each locale in its own language) is the UX convention for
-						    global sites — users recognise their own language's label. */}
-						<div className='hidden md:flex items-center gap-1 text-sm font-medium'>
-							<Link
-								href={`/${otherLang}`}
-								className='text-gray-400 hover:text-gray-700 transition-colors'
-							>
-								{localeLabels[otherLang]}
-							</Link>
-							<span className='text-gray-300 mx-0.5'>|</span>
-							<span className='text-bb-green font-bold'>
-								{localeLabels[lang]}
-							</span>
-						</div>
+					<div className='flex-1 flex items-center justify-end gap-4'>
+						<Link
+							href='#'
+							className='hidden lg:block text-sm font-medium text-gray-700 hover:text-bb-green underline transition-colors'
+						>
+							Download menu
+						</Link>
 
 						{/* ── CTA button ───────────────────────────────────────── */}
 						<Link
 							href='#contact'
-							className='hidden md:inline-flex items-center px-4 py-2 rounded-full bg-bb-green text-white text-sm font-semibold hover:bg-bb-green-dark transition-colors'
+							className='hidden md:inline-flex items-center px-4 py-2 rounded-full bg-bb-green text-white text-sm font-semibold hover:bg-[#114b3f] transition-colors'
 						>
 							Book free testing
 						</Link>
 
+						{/* ── Language toggle ──────────────────────────────────── */}
+						<div className='hidden md:flex bg-gray-100 p-1 rounded-md text-sm font-medium'>
+							{locales.map((locale) => {
+								const isActive = locale === lang;
+								return (
+									<Link
+										key={locale}
+										href={`/${locale}`}
+										className={`py-1 px-2 rounded-sm transition-colors ${
+											isActive
+												? "bg-white shadow-sm text-gray-900"
+												: "text-gray-500 hover:text-gray-700"
+										}`}
+									>
+										{localeLabels[locale]}
+									</Link>
+								);
+							})}
+						</div>
+
 						{/* ── Mobile hamburger ─────────────────────────────────── */}
 						<button
-							className='md:hidden p-2 rounded-md text-gray-700 hover:text-bb-green'
+							className='md:hidden ml-2 p-2 rounded-md text-gray-700 hover:text-bb-green'
 							onClick={() => setMobileOpen((prev) => !prev)}
 							aria-expanded={mobileOpen}
 							aria-label='Menü öffnen'

@@ -21,32 +21,32 @@ export default function StatsSection({ section }: Props) {
 	const sectionClass =
 		colorScheme === "dark"
 			? "bg-bb-green py-20 lg:py-28"
-			: "bg-bb-surface py-20 lg:py-28";
+			: "bg-white py-12 lg:py-20";
 
 	const headlineClass =
 		colorScheme === "dark"
 			? "text-white text-center text-3xl lg:text-4xl font-black mb-12"
-			: "text-bb-green text-center text-3xl lg:text-4xl font-black mb-12";
+			: "text-gray-900 text-center text-3xl lg:text-4xl font-bold mb-12";
 
 	const cardClass =
 		colorScheme === "dark"
-			? "bg-bb-green-dark border border-white/10 rounded-2xl p-8 flex flex-col items-center text-center gap-2"
-			: "bg-white border border-gray-100 rounded-2xl p-8 flex flex-col items-center text-center gap-2 shadow-sm";
+			? "bg-bb-green-dark border border-white/10 rounded-3xl p-8 flex flex-col items-start gap-4 h-full justify-center"
+			: "bg-[#f9f9f9] rounded-2xl p-8 lg:p-12 flex flex-col items-start gap-6 h-full justify-center";
 
 	const valueClass =
 		colorScheme === "dark"
-			? "text-bb-lime font-black text-5xl lg:text-6xl"
-			: "text-bb-green font-black text-5xl lg:text-6xl";
+			? "text-bb-lime font-medium text-5xl lg:text-6xl"
+			: "text-[#222222] font-medium text-5xl lg:text-6xl tracking-tight leading-none min-h-[4rem] flex items-end";
 
 	const labelClass =
 		colorScheme === "dark"
-			? "text-white font-semibold text-sm uppercase tracking-wide"
-			: "text-gray-700 font-semibold text-sm uppercase tracking-wide";
+			? "text-white/90 font-normal text-sm lg:text-base mt-auto"
+			: "text-gray-700 font-normal text-sm lg:text-base mt-auto leading-relaxed";
 
 	const descClass =
 		colorScheme === "dark"
 			? "text-white/60 text-xs mt-1"
-			: "text-gray-400 text-xs mt-1";
+			: "text-gray-500 text-xs mt-1";
 
 	return (
 		<UI.Box as='section' aria-label='Statistics' className={sectionClass}>
